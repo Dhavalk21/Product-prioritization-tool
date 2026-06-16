@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strategic Product Initiative Prioritization & Planning Engine</title>
+  <!-- Tailwind CSS for high-quality, modern styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Smooth transition utilities and custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans antialiased">
+
+  <!-- Header Panel -->
+  <header class="bg-white border-b border-slate-200 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 mb-2">
+          Product Management Tool
+        </span>
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Strategic Initiative Prioritization Engine</h1>
+        <p class="text-sm text-slate-500 mt-1">Align product initiatives with business objectives, balance technical capacity, and run quarterly planning simulations.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button id="btnLoadStrategicDemo" class="inline-flex items-center justify-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+          Load Sample Portfolio
+        </button>
+        <button id="btnClearPortfolio" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 transition">
+          Clear Work Area
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Left Workspace: Input Controls & Weighting Simulator (Col Span 4) -->
+    <div class="lg:col-span-4 flex flex-col gap-6">
+      
+      <!-- Input Form -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Propose Strategic Initiative
+        </h2>
+        
+        <form id="initiativeForm" class="space-y-4">
+          <!-- Name -->
+          <div>
+            <label for="initName" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Initiative Name</label>
+            <input type="text" id="initName" required placeholder="e.g., Enterprise Single Sign-On (SSO)" class="w-full h-10 px-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+
+          <!-- Strategic Alignment / Objective Dropdown -->
+          <div>
+            <label for="initObjective" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Primary Business Objective</label>
+            <select id="initObjective" class="w-full h-10 px-3 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="Revenue Expansion">Revenue Expansion (Up-sell / New Deals)</option>
+              <option value="Customer Retention">Customer Retention (Churn Reduction)</option>
+              <option value="User Acquisition">User Acquisition (New Signups / Traffic)</option>
+              <option value="Personalization">Personalization (Tailored User Experiences)</option>
+              <option value="User Engagement">User Engagement (Active Usage / Adoption)</option>
+              <option value="Market Penetration">Market Penetration (New Segments)</option>
+              <option value="Operational Efficiency">Operational Efficiency (Technical Debt / Internal Ops)</option>
+              <option value="Security & Compliance">Security & Compliance (Trust / Brand Authority)</option>
+            </select>
+          </div>
+
+          <!-- RICE Parameters -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col">
+              <label for="initReach" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1 h-8 flex items-end">
+                <span>Reach <span class="text-slate-400 font-normal block sm:inline">(Users/Qtr)</span></span>
+              </label>
+              <input type="number" id="initReach" required min="1" value="50000" class="w-full h-10 px-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div class="flex flex-col">
+              <label for="initImpact" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1 h-8 flex items-end">
+                <span>Impact Level</span>
+              </label>
+              <select id="initImpact" class="w-full h-10 px-3 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="3">3 (Critical Bet)</option>
+                <option value="2">2 (High Value)</option>
+                <option value="1">1 (Medium Value)</option>
+                <option value="0.5">0.5 (Low / Minor Improvement)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col">
+              <label for="initConfidence" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1 h-8 flex items-end">
+                <span>Confidence</span>
+              </label>
+              <select id="initConfidence" class="w-full h-10 px-3 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="1.0">100% (Solid Data)</option>
+                <option value="0.8">80% (Market Research)</option>
+                <option value="0.5">50% (High Speculation)</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col">
+              <label for="initEffort" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1 h-8 flex items-end">
+                <span>Effort <span class="text-slate-400 font-normal block sm:inline">(Person-Months)</span></span>
+              </label>
+              <input type="number" id="initEffort" required min="0.5" step="0.5" value="2" class="w-full h-10 px-3 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 mt-2">
+            Analyze & Score Bet
+          </button>
+        </form>
+      </div>
+
+      <!-- Strategic Weighting Simulator (Simulation Mode) -->
+      <div class="bg-indigo-900 text-indigo-100 p-6 rounded-xl shadow-md border border-indigo-950">
+        <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+          <svg class="w-4 h-4 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+          Scenario Optimization Simulator
+        </h3>
+        <p class="text-xs text-indigo-200 mb-4 leading-relaxed">Adjust parameter weights to simulate changing quarterly strategies, resource gaps, or risk appetites.</p>
+        
+        <div class="space-y-4">
+          <!-- Reach Multiplier -->
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span>Audience Volume (Reach) Weight</span>
+              <span id="labelReachWeight" class="font-bold text-white">1.0x</span>
+            </div>
+            <input type="range" id="weightReach" min="0" max="2" step="0.1" value="1.0" class="w-full accent-indigo-400 bg-indigo-950 h-1.5 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <!-- Confidence Multiplier -->
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span>Risk Management (Confidence) Weight</span>
+              <span id="labelConfidenceWeight" class="font-bold text-white">1.0x</span>
+            </div>
+            <input type="range" id="weightConfidence" min="0" max="2" step="0.1" value="1.0" class="w-full accent-indigo-400 bg-indigo-950 h-1.5 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <!-- Effort Multiplier (Penalty weight) -->
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span>Engineering Cost (Effort) Penalty</span>
+              <span id="labelEffortWeight" class="font-bold text-white">1.0x</span>
+            </div>
+            <input type="range" id="weightEffort" min="0.5" max="2.5" step="0.1" value="1.0" class="w-full accent-indigo-400 bg-indigo-950 h-1.5 rounded-lg appearance-none cursor-pointer">
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-indigo-800 text-[11px] text-indigo-300 leading-relaxed">
+          <strong>Tip for Planning:</strong> If your team has lost engineering capacity, increase the <em>Effort Penalty</em> to automatically push complex projects down in priority.
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Right Workspace: Portfolio Breakdown & Table (Col Span 8) -->
+    <div class="lg:col-span-8 flex flex-col gap-6">
+      
+      <!-- Key Strategic Stats & Resource Allocation bar -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Stat: Impact Pipeline -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Proposed Bets</span>
+          <span id="statCount" class="block text-3xl font-extrabold text-slate-900 mt-1">0</span>
+        </div>
+
+        <!-- Stat: Total Engineering Cost -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Engineering Investment</span>
+          <span id="statCapacity" class="block text-3xl font-extrabold text-slate-900 mt-1">0 PM</span>
+        </div>
+
+        <!-- Stat: High Risk Items -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Top Weighted Bet</span>
+          <span id="statTopPick" class="block text-sm font-bold text-slate-800 truncate mt-3">None</span>
+        </div>
+      </div>
+
+      <!-- Resource Allocation Matrix (Visualizing where effort is spent) -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center justify-between">
+          <span>Investment Distribution by Business Objective</span>
+          <span class="text-xs font-normal text-slate-400">Shows percentage of technical resources allocated</span>
+        </h3>
+        
+        <div class="space-y-3">
+          <div id="allocationBarContainer" class="w-full h-4 bg-slate-100 rounded-full overflow-hidden flex">
+            <!-- Dynamic segmented progress bar will render here -->
+          </div>
+          
+          <div id="allocationLegend" class="flex flex-wrap gap-x-4 gap-y-2 text-xs">
+            <!-- Dynamic labels and percentages will generate here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Priorities Portfolio Table -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        
+        <div class="p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Prioritized Portfolio Pipeline</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Calculated using the customized strategy configuration. Sorted descending by RICE index.</p>
+          </div>
+          
+          <button id="btnClipboardExport" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3.5 py-2 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+            Export Markdown Table
+          </button>
+        </div>
+
+        <!-- Table View -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-500 uppercase text-xs tracking-wider border-b border-slate-200 font-semibold">
+                <th class="py-3 px-4">Initiative & Business Goal</th>
+                <th class="py-3 px-4 text-center">Reach</th>
+                <th class="py-3 px-4 text-center">Impact</th>
+                <th class="py-3 px-4 text-center">Confidence</th>
+                <th class="py-3 px-4 text-center">Effort</th>
+                <th class="py-3 px-4 text-center text-slate-900">Base RICE</th>
+                <th class="py-3 px-4 text-center text-indigo-600 font-bold">Sim Score</th>
+                <th class="py-3 px-4 text-center">Strategy Type</th>
+                <th class="py-3 px-4"></th>
+              </tr>
+            </thead>
+            <tbody id="portfolioTableBody" class="divide-y divide-slate-100 text-sm">
+              <!-- Rendered programmatically -->
+            </tbody>
+          </table>
+          
+          <!-- Empty Slate -->
+          <div id="noDataSlate" class="py-16 text-center text-slate-400">
+            <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <p class="text-sm font-medium text-slate-500">Your Portfolio Workspace is Empty</p>
+            <p class="text-xs text-slate-400 mt-1">Load the Sample Portfolio or manually add initiatives on the left to begin planning.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Interactive Dashboard Business Logic -->
+  <script>
+    // In-Memory state for Portfolio items
+    let portfolio = [];
+
+    // Realistic strategic sample initiatives representing senior PM planning
+    const samplePortfolio = [
+      { id: "p-01", name: "High-Throughput Core Billing Platform Rewrite", objective: "Revenue Expansion", reach: 250000, impact: 3, confidence: 1.0, effort: 6.0 },
+      { id: "p-02", name: "SSO & SAML Security Integration for Enterprise Buyers", objective: "Security & Compliance", reach: 80000, impact: 3, confidence: 0.8, effort: 3.5 },
+      { id: "p-03", name: "Automated Self-Service Plan Migration Portal", objective: "Customer Retention", reach: 120000, impact: 2, confidence: 0.8, effort: 1.5 },
+      { id: "p-04", name: "Frictionless Guest Checkout Conversion Path Optimization", objective: "User Acquisition", reach: 600000, impact: 2, confidence: 0.5, effort: 2.0 },
+      { id: "p-05", name: "AI-Powered Personalization Engine for Home Feed", objective: "Personalization", reach: 450000, impact: 2, confidence: 0.8, effort: 3.0 },
+      { id: "p-06", name: "Database Optimization & Log Retention Policy Cleanup", objective: "Operational Efficiency", reach: 12000, impact: 1, confidence: 1.0, effort: 1.0 }
+    ];
+
+    // Objective styling maps
+    const objectiveColorMap = {
+      "Revenue Expansion": { bg: "bg-emerald-500", text: "text-emerald-700", border: "border-emerald-100", chip: "bg-emerald-50" },
+      "Customer Retention": { bg: "bg-indigo-500", text: "text-indigo-700", border: "border-indigo-100", chip: "bg-indigo-50" },
+      "User Acquisition": { bg: "bg-rose-500", text: "text-rose-700", border: "border-rose-100", chip: "bg-rose-50" },
+      "Personalization": { bg: "bg-violet-500", text: "text-violet-700", border: "border-violet-100", chip: "bg-violet-50" },
+      "User Engagement": { bg: "bg-fuchsia-500", text: "text-fuchsia-700", border: "border-fuchsia-100", chip: "bg-fuchsia-50" },
+      "Market Penetration": { bg: "bg-sky-500", text: "text-sky-700", border: "border-sky-100", chip: "bg-sky-50" },
+      "Operational Efficiency": { bg: "bg-amber-500", text: "text-amber-700", border: "border-amber-100", chip: "bg-amber-50" },
+      "Security & Compliance": { bg: "bg-slate-500", text: "text-slate-700", border: "border-slate-100", chip: "bg-slate-50" }
+    };
+
+    // DOM Elements
+    const initiativeForm = document.getElementById('initiativeForm');
+    const portfolioTableBody = document.getElementById('portfolioTableBody');
+    const noDataSlate = document.getElementById('noDataSlate');
+    const btnLoadStrategicDemo = document.getElementById('btnLoadStrategicDemo');
+    const btnClearPortfolio = document.getElementById('btnClearPortfolio');
+    const btnClipboardExport = document.getElementById('btnClipboardExport');
+
+    // Weight Elements
+    const weightReach = document.getElementById('weightReach');
+    const weightConfidence = document.getElementById('weightConfidence');
+    const weightEffort = document.getElementById('weightEffort');
+
+    const labelReachWeight = document.getElementById('labelReachWeight');
+    const labelConfidenceWeight = document.getElementById('labelConfidenceWeight');
+    const labelEffortWeight = document.getElementById('labelEffortWeight');
+
+    // Stat Widgets
+    const statCount = document.getElementById('statCount');
+    const statCapacity = document.getElementById('statCapacity');
+    const statTopPick = document.getElementById('statTopPick');
+
+    // Allocation Elements
+    const allocationBarContainer = document.getElementById('allocationBarContainer');
+    const allocationLegend = document.getElementById('allocationLegend');
+
+    // Calculate score using customized scenario multipliers
+    function calculateWeightedRICE(item) {
+      const wReach = parseFloat(weightReach.value);
+      const wConfidence = parseFloat(weightConfidence.value);
+      const wEffort = parseFloat(weightEffort.value);
+
+      // Raw values modified by multiplier settings
+      const adjustedReach = item.reach * wReach;
+      const adjustedConfidence = item.confidence * wConfidence;
+      const adjustedEffort = item.effort * wEffort;
+
+      if (adjustedEffort <= 0) return 0;
+      
+      const score = (adjustedReach * item.impact * adjustedConfidence) / adjustedEffort;
+      return Math.round(score);
+    }
+
+    // Classic base RICE for comparison
+    function calculateBaseRICE(item) {
+      return Math.round((item.reach * item.impact * item.confidence) / item.effort);
+    }
+
+    // Classify initiatives by profile category
+    function determinePlanningCategory(score, effort) {
+      if (score >= 50000 && effort <= 2.5) {
+        return { label: 'Quick Win Bet', color: 'bg-green-50 text-green-800 border-green-200' };
+      } else if (score >= 50000 && effort > 2.5) {
+        return { label: 'Strategic Bet', color: 'bg-blue-50 text-blue-800 border-blue-200' };
+      } else if (score < 50000 && effort <= 2.5) {
+        return { label: 'Tactical Task', color: 'bg-slate-100 text-slate-700 border-slate-200' };
+      } else {
+        return { label: 'De-Prioritized Item', color: 'bg-red-50 text-red-700 border-red-100' };
+      }
+    }
+
+    // Main UI Render Function
+    function render() {
+      // Calculate active scores
+      portfolio.forEach(item => {
+        item.score = calculateWeightedRICE(item);
+        item.baseScore = calculateBaseRICE(item);
+      });
+
+      // Sort by score descending
+      portfolio.sort((a, b) => b.score - a.score);
+
+      // Handle empty state
+      if (portfolio.length === 0) {
+        portfolioTableBody.innerHTML = '';
+        noDataSlate.classList.remove('hidden');
+        statCount.textContent = '0';
+        statCapacity.textContent = '0 PM';
+        statTopPick.textContent = 'None';
+        allocationBarContainer.innerHTML = '<div class="w-full h-full bg-slate-100"></div>';
+        allocationLegend.innerHTML = '<span class="text-slate-400">No initiatives added. Add data to visualize allocation.</span>';
+        return;
+      }
+
+      noDataSlate.classList.add('hidden');
+      portfolioTableBody.innerHTML = '';
+
+      let totalEffort = 0;
+      let allocationMap = {};
+
+      portfolio.forEach((item, index) => {
+        totalEffort += parseFloat(item.effort);
+        
+        // Track effort for strategic objectives
+        if (!allocationMap[item.objective]) {
+          allocationMap[item.objective] = 0;
+        }
+        allocationMap[item.objective] += parseFloat(item.effort);
+
+        const category = determinePlanningCategory(item.score, item.effort);
+        const objStyle = objectiveColorMap[item.objective];
+
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+        row.innerHTML = `
+          <td class="py-4 px-4 font-medium text-slate-900 max-w-[240px]">
+            <div class="flex items-start gap-2">
+              <span class="text-slate-400 font-mono text-xs mt-1">${index + 1}.</span>
+              <div>
+                <span class="block text-slate-900 font-semibold leading-snug">${item.name}</span>
+                <span class="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${objStyle.chip} ${objStyle.text} ${objStyle.border}">
+                  ${item.objective}
+                </span>
+              </div>
+            </div>
+          </td>
+          <td class="py-4 px-4 text-center font-mono text-slate-600">${item.reach.toLocaleString()}</td>
+          <td class="py-4 px-4 text-center text-slate-700">${item.impact}x</td>
+          <td class="py-4 px-4 text-center font-mono text-slate-600">${Math.round(item.confidence * 100)}%</td>
+          <td class="py-4 px-4 text-center font-mono text-slate-600">${item.effort} PM</td>
+          <td class="py-4 px-4 text-center font-mono text-slate-400">${item.baseScore.toLocaleString()}</td>
+          <td class="py-4 px-4 text-center font-bold text-indigo-600 font-mono text-base">${item.score.toLocaleString()}</td>
+          <td class="py-4 px-4 text-center">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${category.color}">
+              ${category.label}
+            </span>
+          </td>
+          <td class="py-4 px-4 text-center">
+            <button onclick="removeInitiative('${item.id}')" class="text-slate-300 hover:text-red-500 transition focus:outline-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+          </td>
+        `;
+        portfolioTableBody.appendChild(row);
+      });
+
+      // Update basic statistics
+      statCount.textContent = portfolio.length;
+      statCapacity.textContent = `${totalEffort.toFixed(1)} PM`;
+      statTopPick.textContent = portfolio[0].name;
+
+      // Render resource allocation bar & legend
+      allocationBarContainer.innerHTML = '';
+      allocationLegend.innerHTML = '';
+
+      Object.keys(allocationMap).forEach(key => {
+        const effortAllocated = allocationMap[key];
+        const percentage = totalEffort > 0 ? (effortAllocated / totalEffort) * 100 : 0;
+        const colorStyle = objectiveColorMap[key];
+
+        if (percentage > 0) {
+          // Add bar segment
+          const segment = document.createElement('div');
+          segment.style.width = `${percentage}%`;
+          segment.className = `${colorStyle.bg} h-full transition-all duration-300`;
+          allocationBarContainer.appendChild(segment);
+
+          // Add legend item
+          const legendItem = document.createElement('span');
+          legendItem.className = 'inline-flex items-center gap-1.5';
+          legendItem.innerHTML = `
+            <span class="w-2.5 h-2.5 rounded-full ${colorStyle.bg}"></span>
+            <span class="font-medium text-slate-700">${key}:</span>
+            <span class="text-slate-400">${percentage.toFixed(0)}% (${effortAllocated} PM)</span>
+          `;
+          allocationLegend.appendChild(legendItem);
+        }
+      });
+    }
+
+    // Dynamic slide multipliers listener
+    function updateWeightsDisplay() {
+      labelReachWeight.textContent = `${parseFloat(weightReach.value).toFixed(1)}x`;
+      labelConfidenceWeight.textContent = `${parseFloat(weightConfidence.value).toFixed(1)}x`;
+      labelEffortWeight.textContent = `${parseFloat(weightEffort.value).toFixed(1)}x`;
+      render();
+    }
+
+    [weightReach, weightConfidence, weightEffort].forEach(input => {
+      input.addEventListener('input', updateWeightsDisplay);
+    });
+
+    // Form submission processing
+    initiativeForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('initName').value.trim();
+      const objective = document.getElementById('initObjective').value;
+      const reach = parseInt(document.getElementById('initReach').value);
+      const impact = parseFloat(document.getElementById('initImpact').value);
+      const confidence = parseFloat(document.getElementById('initConfidence').value);
+      const effort = parseFloat(document.getElementById('initEffort').value);
+
+      portfolio.push({
+        id: crypto.randomUUID(),
+        name,
+        objective,
+        reach,
+        impact,
+        confidence,
+        effort
+      });
+
+      initiativeForm.reset();
+      // Set defaults back on inputs manually
+      document.getElementById('initReach').value = "50000";
+      document.getElementById('initImpact').value = "2";
+      document.getElementById('initConfidence').value = "1.0";
+      document.getElementById('initEffort').value = "2";
+
+      render();
+    });
+
+    // Delete item global hook
+    window.removeInitiative = function(id) {
+      portfolio = portfolio.filter(item => item.id !== id);
+      render();
+    };
+
+    // Load sample portfolio
+    btnLoadStrategicDemo.addEventListener('click', () => {
+      portfolio = JSON.parse(JSON.stringify(samplePortfolio));
+      render();
+    });
+
+    // Clear portfolio workspace
+    btnClearPortfolio.addEventListener('click', () => {
+      portfolio = [];
+      render();
+    });
+
+    // Copy to clipboard formatted Markdown table
+    btnClipboardExport.addEventListener('click', () => {
+      if (portfolio.length === 0) {
+        alert("Please load or add product initiatives to copy!");
+        return;
+      }
+
+      const wReach = parseFloat(weightReach.value).toFixed(1);
+      const wConfidence = parseFloat(weightConfidence.value).toFixed(1);
+      const wEffort = parseFloat(weightEffort.value).toFixed(1);
+
+      let markdown = `### 📋 Strategic Prioritization Matrix\n\n`;
+      markdown += `*Simulation configuration: Reach weight: ${wReach}x, Confidence weight: ${wConfidence}x, Effort Penalty: ${wEffort}x.*\n\n`;
+      markdown += `| Rank | Initiative Name | Business Objective | Target Reach | Impact | Confidence | Effort | Adjusted Score |\n`;
+      markdown += `| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |\n`;
+
+      portfolio.forEach((item, index) => {
+        markdown += `| ${index + 1} | ${item.name} | ${item.objective} | ${item.reach.toLocaleString()} | ${item.impact}x | ${Math.round(item.confidence * 100)}% | ${item.effort} PM | **${item.score.toLocaleString()}** |\n`;
+      });
+
+      // Create fallback textbox inside viewport for copy functionality
+      const tempArea = document.createElement("textarea");
+      tempArea.value = markdown;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempArea);
+
+      // Simple UI response label update helper
+      const defaultButtonText = btnClipboardExport.innerHTML;
+      btnClipboardExport.innerHTML = `
+        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        Copied to Clipboard!
+      `;
+      setTimeout(() => {
+        btnClipboardExport.innerHTML = defaultButtonText;
+      }, 2000);
+    });
+
+    // Onload setup init
+    window.onload = function() {
+      render();
+    };
+  </script>
+
+</body>
+</html>
