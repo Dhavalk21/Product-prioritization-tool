@@ -7,7 +7,7 @@ An interactive, client-side web application designed to help Product Managers pr
 
 ## 🚀 Key Features
 
-* __Objective-Aligned Planning:__ Every initiative is mapped to a primary business driver (e.g., Revenue Expansion, User Acquisition, Personalization, Operational Efficiency)
+* __Objective-Aligned Planning:__ Every initiative is mapped to a primary business driver (e.g., Revenue Expansion, User Acquisition, Personalization, Operational Efficiency).
 
 * __Customizable Scenario Simulator:__ Adjust active multipliers for Audience Volume (Reach), Risk Management (Confidence), and Engineering Cost (Effort) to simulate immediate changes in company strategy or technical bandwidth.
 
